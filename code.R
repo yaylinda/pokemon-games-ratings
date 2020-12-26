@@ -26,7 +26,7 @@ data$platform_url[which(data$platform == 'DS')] =
   'https://www.logolynx.com/images/logolynx/aa/aa91597ddbb4c97fe02004240c1a3b17.png'
 
 data$platform_url[which(data$platform == 'GC')] = 
-  'https://www.pinclipart.com/picdir/big/144-1446693_boy-logo-vector-and-clip-art-inspiration-nintendo.png'
+  'https://pngimage.net/wp-content/uploads/2018/06/nintendo-gamecube-logo-png-2.png'
 
 data$platform_url[which(data$platform == 'iOS')] = 
   'https://cdn.magicbytesolutions.com/assets/img/common/ios-app.png'
@@ -92,8 +92,6 @@ avg_score$label = ifelse(
   )
 )
 
-avg_score$platform_test_html = "<img src='https://www.logolynx.com/images/logolynx/aa/aa91597ddbb4c97fe02004240c1a3b17.png' width='50'/>"
-
 ordering = c(
   "<img src='https://i.dlpng.com/static/png/6897050_preview.png' width='50' />"                                                                                     
   , "<img src='https://cdn.magicbytesolutions.com/assets/img/common/ios-app.png' width='50' />"                                                                       
@@ -102,8 +100,12 @@ ordering = c(
   , "<img src='https://lh3.googleusercontent.com/-tYqTehc2Jsw/Wp6awtYxyFI/AAAAAAAAEp0/XRbmZ_G1eosqBrieOSaLLraddowgdEwNwCKgBGAs/s640/nintendo%2Bwii.png' width='50' />"
   , "<img src='https://www.logolynx.com/images/logolynx/aa/aa91597ddbb4c97fe02004240c1a3b17.png' width='50' />"                                                       
   , "<img src='https://www.pngkit.com/png/full/142-1424510_source-nintendo-game-boy-advance-logo.png' width='50' />"                             
-  , "<img src='https://www.pinclipart.com/picdir/big/144-1446693_boy-logo-vector-and-clip-art-inspiration-nintendo.png' width='50' />"    
+  , "<img src='https://pngimage.net/wp-content/uploads/2018/06/nintendo-gamecube-logo-png-2.png' width='50' />"    
   , "<img src='https://cdn.freebiesupply.com/images/large/2x/n64-logo-png-transparent.png' width='50' />")      
+
+
+avg_score$platform_test_html = "<img src='https://pngimage.net/wp-content/uploads/2018/06/nintendo-gamecube-logo-png-2.png' width='50'/>"
+
 
 # Tile Plot
 ggplot(
