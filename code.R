@@ -65,6 +65,13 @@ avg_score = aggregate(
 
 avg_score$score = floor(avg_score$x)
 
+min_year = aggregate(
+  data$year, 
+  by = list(platform = data$platform, platform_html = data$platform_html),
+  min
+)
+min_year = min_year[order(-min_year$x), ]
+
 avg_score$color = ifelse(
   avg_score$score >= 75, 
   "#66cc33", 
@@ -87,13 +94,24 @@ avg_score$label = ifelse(
 
 avg_score$platform_test_html = "<img src='https://www.logolynx.com/images/logolynx/aa/aa91597ddbb4c97fe02004240c1a3b17.png' width='50'/>"
 
+ordering = c(
+  "<img src='https://i.dlpng.com/static/png/6897050_preview.png' width='50' />"                                                                                     
+  , "<img src='https://cdn.magicbytesolutions.com/assets/img/common/ios-app.png' width='50' />"                                                                       
+  , "<img src='https://www.pikpng.com/pngl/b/320-3203051_gamestop-logo-transparent-nintendo-wii-u-logo-clipart.png' width='50' />"                                    
+  , "<img src='https://www.gamingmad.com/wp-content/uploads/2018/07/Nintendo_3DS_logo-300x168.png' width='50' />"                                                     
+  , "<img src='https://lh3.googleusercontent.com/-tYqTehc2Jsw/Wp6awtYxyFI/AAAAAAAAEp0/XRbmZ_G1eosqBrieOSaLLraddowgdEwNwCKgBGAs/s640/nintendo%2Bwii.png' width='50' />"
+  , "<img src='https://www.logolynx.com/images/logolynx/aa/aa91597ddbb4c97fe02004240c1a3b17.png' width='50' />"                                                       
+  , "<img src='https://www.pngkit.com/png/full/142-1424510_source-nintendo-game-boy-advance-logo.png' width='50' />"                             
+  , "<img src='https://www.pinclipart.com/picdir/big/144-1446693_boy-logo-vector-and-clip-art-inspiration-nintendo.png' width='50' />"    
+  , "<img src='https://cdn.freebiesupply.com/images/large/2x/n64-logo-png-transparent.png' width='50' />")      
+
 # Tile Plot
 ggplot(
   avg_score, 
   aes(
     x = year, 
     # y = platform_test_html,
-    y = factor(platform_html, levels = rev(avg_score_by_platform$platform_html)),
+    y = factor(platform_html, levels = rev(ordering)),
     fill = factor(
       label, 
       levels = c("Generally Favorable", "Mixed or Average", "Generally Unfavorable")
