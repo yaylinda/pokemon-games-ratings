@@ -70,7 +70,7 @@ ggplot(
   geom_tile(color = "white") + 
   geom_text(
     aes(label = score), 
-    size = 7,
+    size = 7.5,
     color = "white",
     fontface = "bold",
     family = "mono"
@@ -90,11 +90,11 @@ ggplot(
     text = element_text(family = "mono"),
     axis.line.y.left = element_line(color = "black", lineend = "round"),
     plot.margin = margin(t = 20, r = 20, b = 20, l = 20),
-    axis.title.y = element_text(size = rel(1.3), margin = margin(t = 0, r =20, b = 0, l = 0)),
-    axis.title.x = element_text(size = rel(1.3), margin = margin(t = 20, r = 0, b = 10, l = 0)),
-    axis.text.y = element_text(size = rel(1.5), hjust = 1, face = "bold"),
-    axis.text.x = element_text(size = rel(1.5), face = "bold"),
-    plot.title = element_text(size = rel(2.5), hjust = 0, face = "bold"),
+    axis.title.y = element_text(size = rel(1.4), margin = margin(t = 0, r =20, b = 0, l = 0)),
+    axis.title.x = element_text(size = rel(1.4), margin = margin(t = 20, r = 0, b = 10, l = 0)),
+    axis.text.y = element_text(size = rel(1.4), hjust = 1, face = "bold"),
+    axis.text.x = element_text(size = rel(1.4), face = "bold"),
+    plot.title = element_text(size = rel(3), hjust = 0, face = "bold"),
     plot.subtitle = element_text(size = rel(1.5),  margin = margin(t = 10, b = 30), hjust = 0),
     axis.text = element_text(size = rel(1.5)),
     legend.text = element_text(size = rel(1.5)),
