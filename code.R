@@ -2,6 +2,8 @@ setwd("~/Developer/pokemon-games-ratings")
 
 library(ggplot2)
 library(ggthemes)
+library(extrafont)
+loadfonts()
 
 data = read.csv("data.csv")
 data = na.omit(data)
@@ -28,53 +30,77 @@ avg_score = aggregate(
   mean
 )
 
+avg_score$score = floor(avg_score$x)
+
+avg_score$color = ifelse(
+  avg_score$score >= 75, 
+  "#66cc33", 
+  ifelse(
+    avg_score$score >= 50, 
+    "#ffcc33", 
+    "#ff0000"
+  )
+)
+
+avg_score$label = ifelse(
+  avg_score$score >= 75, 
+  "Generally Favorable", 
+  ifelse(
+    avg_score$score >= 50, 
+    "Mixed or Average", 
+    "Generally Unfavorable"
+  )
+)
+
 # Tile Plot
 ggplot(
   avg_score, 
   aes(
     x = year, 
-    y = factor(platform, rev(avg_score_by_platform[, 1])), 
-    fill = x,
+    y = factor(
+      platform, 
+      levels = rev(avg_score_by_platform[, 1])
+    ), 
+    fill = factor(
+      label, 
+      levels = c("Generally Favorable", "Mixed or Average", "Generally Unfavorable")
+    )
   )
 ) + 
-geom_tile(color = "white", alpha = 0.8) + 
-geom_text(
-  aes(label = x), 
-  size = 3
-) +
-coord_equal(ratio = 1) + 
-labs(
-  y = "Platform",
-  x = "Year\n",
-  title = "Pokemon Game Metacritic Ratings",
-  subtitle = "",
-  fill = "Metacritic Score",
-  caption = "Data visualization by randomo_redditor"
-) + 
-# scale_fill_gradient2(
-#   "Number of Times Awarded", 
-#   limits = c(0, max(aggregated_not_other$x)), 
-#   low = "#762A83", 
-#   mid = "white", 
-#   high = "#1B7837"
-# ) +
-scale_x_discrete(
-  position = "top"
-) +
-theme_stata() +
-theme(
-  panel.grid.major = element_blank(), 
-  panel.grid.minor = element_blank(), 
-  axis.ticks = element_blank(),
-  axis.text.y = element_text(angle = 360),
-  axis.text.x = element_text(angle = 45,  hjust = -0.005),
-  plot.title = element_text(size = 20),
-  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 20)),
-  axis.title.x = element_text(margin = margin(t = 0, r = 0, b = 0, l = 0)),
-  plot.subtitle = element_text(margin = margin(t = 5, r = 0, b = 20, l = 0), color = "darkgray"),
-  plot.margin = unit(c(1, 5, 2, 1), "cm"),
-  plot.caption = element_text(color = "darkgray", vjust = -15, hjust = -0.4)
-)
+  geom_tile(color = "white") + 
+  geom_text(
+    aes(label = score), 
+    size = 6,
+    color = "white",
+    fontface = "bold",
+    family = "mono"
+  ) +
+  coord_equal(ratio = 1) + 
+  scale_fill_manual(values = c("#66cc33", "#ffcc33", "#ff0000")) +
+  labs(
+    y = "Platform",
+    x = "Year",
+    title = "Gotta Play and Rate 'em All",
+    subtitle = "Metacritic Ratings of Pokémon Games across various platforms",
+    caption = "Data visualization by randomo_redditor",
+    fill = ""
+  ) +
+  theme_economist() +
+  theme(
+    text = element_text(family = "mono"),
+    axis.line.y.left = element_line(color = "black", lineend = "round"),
+    plot.margin = margin(t = 20, r = 20, b = 20, l = 20),
+    axis.title.y = element_text(margin = margin(t = 0, r =20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 10, l = 0)),
+    axis.text.y = element_text(hjust = 1, face = "bold"),
+    axis.text.x = element_text(face = "bold"),
+    plot.title = element_text(size = rel(2), hjust = 0, face = "bold"),
+    plot.subtitle = element_text(margin = margin(t = 10, b = 30), hjust = 0),
+    axis.text = element_text(size = rel(1.2)),
+    legend.text = element_text(size = rel(1.2)),
+    legend.margin = margin(b = 20)
+  )
+
 
 # Box Plot (Platform)
 ggplot(
