@@ -4,6 +4,7 @@ library(ggplot2)
 library(ggthemes)
 library(ggtext)
 library(extrafont)
+library(ggrepel)
 loadfonts()
 
 data = read.csv("data.csv")
@@ -39,6 +40,11 @@ data$platform_url[which(data$platform == 'WIIU')] =
 
 data$platform_html = paste("<img src='", data$platform_url, "' width='50' />", sep = "")
 
+
+data$platform[which(data$platform == "WII")] = "Wii"
+data$platform[which(data$platform == "WIIU")] = "Wii U"
+data$platform[which(data$platform == "GC")] = "GameCube"
+
 # Aggregate scores by platform
 avg_score_by_platform = aggregate(
   data$score,
@@ -58,7 +64,8 @@ avg_score = aggregate(
   by = list(
     platform = data$platform,
     platform_html = data$platform_html,
-    year = data$year
+    year = data$year,
+    title = data$title
   ),
   mean
 )
@@ -92,19 +99,74 @@ avg_score$label = ifelse(
   )
 )
 
-ordering = c(
-  "<img src='https://i.dlpng.com/static/png/6897050_preview.png' width='50' />"                                                                                     
-  , "<img src='https://cdn.magicbytesolutions.com/assets/img/common/ios-app.png' width='50' />"                                                                       
-  , "<img src='https://www.pikpng.com/pngl/b/320-3203051_gamestop-logo-transparent-nintendo-wii-u-logo-clipart.png' width='50' />"                                    
-  , "<img src='https://www.gamingmad.com/wp-content/uploads/2018/07/Nintendo_3DS_logo-300x168.png' width='50' />"                                                     
-  , "<img src='https://lh3.googleusercontent.com/-tYqTehc2Jsw/Wp6awtYxyFI/AAAAAAAAEp0/XRbmZ_G1eosqBrieOSaLLraddowgdEwNwCKgBGAs/s640/nintendo%2Bwii.png' width='50' />"
-  , "<img src='https://www.logolynx.com/images/logolynx/aa/aa91597ddbb4c97fe02004240c1a3b17.png' width='50' />"                                                       
-  , "<img src='https://www.pngkit.com/png/full/142-1424510_source-nintendo-game-boy-advance-logo.png' width='50' />"                             
-  , "<img src='https://pngimage.net/wp-content/uploads/2018/06/nintendo-gamecube-logo-png-2.png' width='50' />"    
-  , "<img src='https://cdn.freebiesupply.com/images/large/2x/n64-logo-png-transparent.png' width='50' />")      
+avg_score_combined = aggregate(
+  avg_score$title,
+  by = list(
+    platform = avg_score$platform,
+    year = avg_score$year,
+    score = avg_score$score,
+    label = avg_score$label
+  ),
+  paste,
+  collapse = ", "
+)
 
+avg_score_combined$title = avg_score_combined$x
+avg_score_combined$title = gsub(" Version", "", avg_score_combined$title)
+avg_score_combined$title = gsub("Pokemon Mystery Dungeon: ", "PMD: ", avg_score_combined$title)
+avg_score_combined$title = gsub("Pokemon: ", "", avg_score_combined$title)
+avg_score_combined$title = gsub("Pokemon ", "", avg_score_combined$title)
+avg_score_combined$title = gsub("My Ranch", "My Pokemon Ranch", avg_score_combined$title)
+avg_score_combined$title = gsub("Black 2, Conquest, White 2", "Black 2, White 2, Conquest", avg_score_combined$title)
 
-avg_score$platform_test_html = "<img src='https://pngimage.net/wp-content/uploads/2018/06/nintendo-gamecube-logo-png-2.png' width='50'/>"
+# Scatter Plot
+ggplot(
+  avg_score_combined,
+  aes(
+    x = year,
+    y = score
+  ),
+) +
+  geom_point(
+    aes(
+      color = factor(
+        platform, 
+        levels = avg_score_by_platform$platform
+      )
+    ), 
+    size = 10
+  ) +
+  geom_text_repel(
+    aes(label = str_wrap(title, width = 18)),
+    direction = "y",
+    box.padding = 1,
+    min.segment.length = 1, 
+    size = 5
+  ) +
+  labs(
+    y = "Metacritic Score",
+    x = "Year",
+    title = "Gotta Play and Rate 'em All",
+    subtitle = "Metacritic Ratings of Pokémon Games across various platforms",
+    caption = "Data visualization by randomo_redditor",
+    color = ""
+  ) +
+  theme_economist() +
+  theme(
+    text = element_text(family = "mono"),
+    axis.line.y.left = element_line(color = "black", lineend = "round"),
+    plot.margin = margin(t = 50, r = 50, b = 30, l = 50),
+    axis.title.x = element_text(size = rel(1.5), margin = margin(t = 50, r = 0, b = 40, l = 0)),
+    axis.title.y = element_text(size = rel(1.5), margin = margin(t = 0, r = 50, b = 0, l = 0)),
+    axis.text.x = element_text(size = rel(1.5), face = "bold"),
+    axis.text.y = element_text(size = rel(1.5), face = "bold"),
+    plot.title = element_text(size = rel(4), hjust = 0, face = "bold"),
+    plot.subtitle = element_text(size = rel(1.5),  margin = margin(t = 20, b = 40), hjust = 0),
+    axis.text = element_text(size = rel(1.5)),
+    legend.text = element_text(size = rel(2)),
+    legend.margin = margin(b = 30)
+  ) + 
+  guides(color = guide_legend(nrow = 1))
 
 
 # Tile Plot
@@ -152,7 +214,6 @@ ggplot(
     legend.text = element_text(size = rel(1.5)),
     legend.margin = margin(b = 20)
   )
-
 
 # Box Plot (Platform)
 ggplot(
