@@ -3,3 +3,5 @@
 Scraped metacritic.com for Pokemon game scores.
 
 ![plot](plot.png)
+
+![plot](Rplot.png)
